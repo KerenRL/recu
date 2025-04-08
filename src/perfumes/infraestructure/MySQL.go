@@ -21,7 +21,7 @@ func NewMySQL() domain.IPerfume {
 	return &MySQL{conn: conn}
 }
 
-func (mysql *MySQL) SavePerfume(marca string, modelo string, precio float32) error {
+func (mysql *MySQL) SavePerfume(marca string, modelo string, precio string) error {
 	query := "INSERT INTO perfume (marca, modelo, precio) VALUES (?, ?, ?)"
 	result, err := mysql.conn.ExecutePreparedQuery(query, marca, modelo, precio)
 	if err != nil {
@@ -30,7 +30,7 @@ func (mysql *MySQL) SavePerfume(marca string, modelo string, precio float32) err
 
 	rowsAffected, _ := result.RowsAffected()
 	if rowsAffected == 1 {
-		log.Printf("[MySQL] - Perfume guardado correctamente: Marca: %s Modelo: %s - Precio: %.2f", marca, modelo, precio)
+		log.Printf("[MySQL] - Perfume guardado correctamente: Marca: %s Modelo: %s - Precio: %s", marca, modelo, precio)
 	} else {
 		log.Println("[MySQL] - No se insertó ninguna fila")
 	}

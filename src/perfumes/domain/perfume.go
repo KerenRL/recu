@@ -1,7 +1,7 @@
 package domain
 
 type IPerfume interface {
-	SavePerfume(marca string, modelo string, precio float32) error
+	SavePerfume(marca string, modelo string, precio string) error 
 	GetAll() ([]Perfume, error)
 	UpdatePerfume(id int32, marca string, modelo string, precio float32) error
 	DeletePerfume(id int32) error
