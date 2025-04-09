@@ -2,6 +2,7 @@ package infraestructure
 
 import (
 	"actividad/src/perfumes/application"
+	"actividad/src/perfumes/domain"
 	"log"
 	"net/http"
 
@@ -16,6 +17,7 @@ func NewCreatePerfumeController(useCase *application.CreatePerfume) *CreatePerfu
 	return &CreatePerfumeController{useCase: useCase}
 }
 
+// Estructura para el cuerpo de la solicitud
 type RequestBody struct {
 	Marca  string  `json:"marca"`
 	Modelo string  `json:"modelo"`
@@ -30,14 +32,31 @@ func (cp_c *CreatePerfumeController) Execute(c *gin.Context) {
 		return
 	}
 
-	log.Printf("Datos recibidos: Marca: %s, Modelo: %s, Precio: %.2f", body.Marca, body.Modelo, body.Precio)
+	// Validar campos
+	if body.Marca == "" || body.Modelo == "" || body.Precio <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Datos inválidos: Marca, Modelo y Precio son obligatorios"})
+		return
+	}
 
-	err := cp_c.useCase.Execute(body.Marca, body.Modelo, body.Precio)
+	id, err := cp_c.useCase.Execute(body.Marca, body.Modelo, body.Precio)
 	if err != nil {
 		log.Printf("Error al ejecutar el caso de uso: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al agregar el perfume", "detalles": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Perfume agregado correctamente"})
+	perfume := domain.Perfume{
+		ID:     id,
+		Marca:  body.Marca,
+		Modelo: body.Modelo,
+		Precio: body.Precio,
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Perfume agregado correctamente",
+		"id":      perfume.ID,
+		"marca":   perfume.Marca,
+		"modelo":  perfume.Modelo,
+		"precio":  perfume.Precio,
+	})
 }

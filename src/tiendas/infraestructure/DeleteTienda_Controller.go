@@ -17,9 +17,9 @@ func NewDeleteTiendaController(useCase *application.DeleteTienda) *DeleteTiendaC
 }
 
 func (dp_c *DeleteTiendaController) Execute(c *gin.Context) {
-	idStr := c.Query("id")
+	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
-	if err != nil {
+	if err != nil || id <= 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID de tienda inválido"})
 		return
 	}

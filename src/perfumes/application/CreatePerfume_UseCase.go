@@ -5,18 +5,17 @@ import (
 )
 
 type CreatePerfume struct {
-	db      domain.IPerfume
-	encrypt domain.IEncryptService
+	db domain.IPerfume
 }
 
-func NewCreatePerfume(db domain.IPerfume, encrypt domain.IEncryptService) *CreatePerfume {
-	return &CreatePerfume{db: db, encrypt: encrypt}
+func NewCreatePerfume(db domain.IPerfume) *CreatePerfume {
+	return &CreatePerfume{db: db}
 }
 
-func (cp *CreatePerfume) Execute(marca string, modelo string, precio float32) error {
-	encryptedPrice, err := cp.encrypt.Encrypt(precio)
+func (cp *CreatePerfume) Execute(marca string, modelo string, precio float32) (int32, error) {
+	id, err := cp.db.SavePerfume(marca, modelo, precio)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return cp.db.SavePerfume(marca, modelo, encryptedPrice)
+	return id, nil
 }

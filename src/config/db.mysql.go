@@ -17,7 +17,7 @@ type Conn_MySQL struct {
 
 func GetDBPool() *Conn_MySQL {
 	error := ""
-	err := godotenv.Load("C:/Users/Asus/Documents/Universidad/quinto cuatri/actividad/actividad/src/.env")
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatalf("Error al cargar el archivo .env: %v", err)
 	}

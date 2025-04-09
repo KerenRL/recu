@@ -1,17 +1,19 @@
 package application
 
-import (
-    "actividad/src/tiendas/domain"
-)
+import "actividad/src/tiendas/domain"
 
 type CreateTienda struct {
-    db domain.ITienda
+	db domain.ITienda
 }
 
 func NewCreateTienda(db domain.ITienda) *CreateTienda {
-    return &CreateTienda{db: db}
+	return &CreateTienda{db: db}
 }
 
-func (cp *CreateTienda) Execute(nombre string, ubicacion string) error {
-    return cp.db.SaveTienda(nombre, ubicacion)
+func (ct *CreateTienda) Execute(nombre string, ubicacion string) (int32, error) {
+	id, err := ct.db.SaveTienda(nombre, ubicacion)
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
 }
